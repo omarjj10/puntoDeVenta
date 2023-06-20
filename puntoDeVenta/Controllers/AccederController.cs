@@ -55,8 +55,11 @@ namespace puntoDeVenta.Controllers
                                             .Select(u => u.Value).SingleOrDefault();
                 idUsuario = int.Parse(id);
                 var user = _db.Usuarios.Where(u => u.UsuarioID == idUsuario).FirstOrDefault();
-                ViewBag.nombre = user.nombre;
-                ViewBag.id = user.UsuarioID;
+                if (user != null)
+                {
+                    ViewBag.nombre = user.nombre;
+                    ViewBag.id = user.UsuarioID;
+                }
                 return View();
             }
             else

@@ -215,8 +215,11 @@ namespace puntoDeVenta.Controllers
             compraGenerada.importe = compraGenerada.precioCompra * compraGenerada.cantidad;
             compraGenerada.numeroCompra = numeroCompra;
             var producto = _db.productos.Where(p => p.nombre.Equals(compraGenerada.NombreProducto)).FirstOrDefault();
-            producto.stock = producto.stock + compraGenerada.cantidad;
-            producto.precioCompra=compraGenerada.precioCompra;
+            if (producto != null)
+            {
+                producto.stock = producto.stock + compraGenerada.cantidad;
+                producto.precioCompra = compraGenerada.precioCompra;
+            }
             _db.compra.Add(compraGenerada);
             _db.SaveChanges();
             return compraGenerada;
@@ -228,7 +231,10 @@ namespace puntoDeVenta.Controllers
             listaCompra.total = compraGenerada.importe;
             listaCompra.fecha = compraGenerada.fechaEntrega;
             var co = _db.compra.Where(c => c.numeroCompra.Equals(compraGenerada.numeroCompra)).FirstOrDefault();
-            listaCompra.total = listaCompra.total + co.importe;
+            if (co != null)
+            {
+                listaCompra.total = listaCompra.total + co.importe;
+            }
             if (_db.listaCompras.Count(c => c.numeroCompra.Equals(compraGenerada.numeroCompra)) == 1)
             {
                 var compra = _db.listaCompras.Where(c => c.numeroCompra.Equals(compraGenerada.numeroCompra)).FirstOrDefault();

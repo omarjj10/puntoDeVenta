@@ -134,9 +134,12 @@ namespace puntoDeVenta.Controllers
                 {
                     return RedirectToAction("Index", new {mensaje="error"});
                 }
-                if (blocVenta.cantidad >= producto.stock)
+                if (producto != null)
                 {
-                    return RedirectToAction("Agregar", new { id = producto.ProductoID , mensaje="error"});
+                    if (blocVenta.cantidad >= producto.stock)
+                    {
+                        return RedirectToAction("Agregar", new { id = producto.ProductoID, mensaje = "error" });
+                    }
                 }
                 _db.blocVentas.Add(blocVenta);
                 _db.SaveChanges();
@@ -158,13 +161,19 @@ namespace puntoDeVenta.Controllers
                 return NotFound();
             }
             var producto = _db.productos.Where(p => p.nombre == blocVenta.nombreProducto).FirstOrDefault();
-            if (blocVenta.nombreProducto == producto.nombre && producto.stock == 1)
+            if(producto != null)
             {
-                return RedirectToAction("Index", new { mensaje = "error" });
+                if (blocVenta.nombreProducto == producto.nombre && producto.stock == 1)
+                {
+                    return RedirectToAction("Index", new { mensaje = "error" });
+                }
             }
-            if (blocVenta.cantidad>=producto.stock)
+            if (producto != null)
             {
-                return RedirectToAction("Index", new { mensaje = "error" });
+                if (blocVenta.cantidad >= producto.stock)
+                {
+                    return RedirectToAction("Index", new { mensaje = "error" });
+                }
             }
             if (listaBlocVenta.Count > 0)
             {
@@ -297,7 +306,10 @@ namespace puntoDeVenta.Controllers
             ventaGenerada.tipoVenta = "boleta";
             ventaGenerada.fecha = venta.fecha;
             var producto = _db.productos.Where(p => p.nombre.Equals(ventaGenerada.nombreProducto)).FirstOrDefault();
-            producto.stock = producto.stock - ventaGenerada.cantidad;
+            if(producto != null)
+            {
+                producto.stock = producto.stock - ventaGenerada.cantidad;
+            }
             _db.ventas.Add(ventaGenerada);
             _db.SaveChanges();
             return ventaGenerada;
@@ -365,7 +377,10 @@ namespace puntoDeVenta.Controllers
             ventaGenerada.tipoVenta = "nota";
             ventaGenerada.fecha = venta.fecha;
             var producto = _db.productos.Where(p => p.nombre.Equals(ventaGenerada.nombreProducto)).FirstOrDefault();
-            producto.stock = producto.stock - ventaGenerada.cantidad;
+            if(producto != null)
+            {
+                producto.stock = producto.stock - ventaGenerada.cantidad;
+            }
             _db.ventas.Add(ventaGenerada);
             _db.SaveChanges();
             return ventaGenerada;
@@ -378,7 +393,10 @@ namespace puntoDeVenta.Controllers
             listaVentas.fecha = ventaGenerada.fecha;
             listaVentas.tipoVenta = ventaGenerada.tipoVenta;
             var co = _db.ventas.Where(c => c.numeroVenta.Equals(ventaGenerada.numeroVenta)).FirstOrDefault();
-            listaVentas.total = listaVentas.total + co.total;
+            if(co != null)
+            {
+                listaVentas.total = listaVentas.total + co.total;
+            }
             if (_db.listaVentas.Count(c => c.numeroVenta.Equals(ventaGenerada.numeroVenta)) == 1)
             {
                 var venta = _db.listaVentas.Where(c => c.numeroVenta.Equals(ventaGenerada.numeroVenta)).FirstOrDefault();
